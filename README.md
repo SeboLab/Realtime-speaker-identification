@@ -2,7 +2,7 @@
 
 ## What is it?
 
-Uses pyannote and Whisper to get realtime transcriptions along with speaker lables through a streaming microphone
+Uses pyannote and Whisper to get realtime transcriptions along with speaker lables for two users speaking through a single streaming microphone
 
 ## Setup - For Everyone
 
@@ -12,6 +12,9 @@ I would recommend running on Python 3.12.0, other versions may produce conflicts
 ### 2. Create a folder called models
 - Within it create a subfolder called pyannote
 - This will be used to store the embedding that pyannote creates
+
+### 3. Create a folder called voiceprint_audio
+- Will hold the 15s audio clips of each speaker for pyannote to use to create your voiceprint
 
 ### 3. Create a HuggingFace account and get an access token
 - Create your account and go [here](https://huggingface.co/pyannote/embedding) to get access to pyannote models
@@ -36,5 +39,15 @@ cmake ..
 cmake --build . --config Release
 ```
 
+## How to run
+
+### 1. Add your two voiceprint audio files to the voiceprint audio folder
+- Each audio file should be around 15s, and should feature only your voice in a clear non-noisy envrionment
+- Label them as `[name].wav` so that your speaker labels have names
+- This works for two speakers ONLY, so there must be exactly two audio files here
+
+### 2. Run main.py and that's it!
+- Transcription along with speaker labels will be printed out into the terminal
+- For best performance, try not to speak at the same time
 
 
