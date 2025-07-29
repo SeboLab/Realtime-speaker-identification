@@ -1,0 +1,7 @@
+SpeechRecognition
+pyaudio
+python-dotenv
+scipy
+openai-whisper
+pyannote.audio
+torch
