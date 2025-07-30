@@ -2,7 +2,7 @@
 
 ## What is it?
 
-Uses pyannote and Whisper to get realtime transcriptions along with speaker lables for two users speaking through a single streaming microphone
+Uses pyannote and Whisper to get realtime transcriptions along with speaker lables for two users speaking through a single streaming microphone. Credit goes to this [youtube video](https://www.youtube.com/watch?v=uf5oth4-eF8) by Tech Giant. Code is largely based on his, but tweaked to work with two people at once
 
 ## Setup - For Everyone
 
@@ -54,7 +54,7 @@ cmake --build . --config Release
 
 ### 2. Run main.py and that's it!
 - Transcription along with speaker labels will be printed out into the terminal
-- Print statements with cosine distance will also be printed, which just tells you how likely it was that you were speaking (>0.7 means unlikely, <0.7 mean likley)
+- Print statements with cosine distance will also be printed, which just tells you how likely it was that you were speaking (>0.675 means unlikely, <0.675 means likley)
 - For best performance, try not to speak at the same time
 
 
