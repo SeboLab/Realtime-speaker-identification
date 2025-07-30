@@ -23,7 +23,13 @@ I would recommend running on Python 3.12.0, other versions may produce conflicts
 
 ### 4. Create another folder called modules
 - Within this folder, run `git clone https://github.com/ggerganov/whisper.cpp.git`
-- For linux/Mac OS this is all 
+- Go into the whisper.cpp folder and run
+`bash ./models/download-ggml-model.sh base.en`
+- This will download the base english model from Whisper
+
+### 5. Finally create a folder called transcribe_audio
+- Temporary storage for the utterences that Whisper detects
+- For linux/Mac OS this is all
 
 ## Setup - For Windows
 
@@ -48,6 +54,7 @@ cmake --build . --config Release
 
 ### 2. Run main.py and that's it!
 - Transcription along with speaker labels will be printed out into the terminal
+- Print statements with cosine distance will also be printed, which just tells you how likely it was that you were speaking (>0.7 means unlikely, <0.7 mean likley)
 - For best performance, try not to speak at the same time
 
 
