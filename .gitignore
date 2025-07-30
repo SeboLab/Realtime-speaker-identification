@@ -1,5 +1,9 @@
 __pycache__/
 .env
 cmake-4.1.0-rc3-windows-x86_64.msi
+transcribed_audio/
+models/
+modules/
+voiceprint_audio/
 pyannote_whisper/
-transcribed_audio.wav
+

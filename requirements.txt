@@ -5,3 +5,4 @@ scipy
 openai-whisper
 pyannote.audio
 torch
+colorama

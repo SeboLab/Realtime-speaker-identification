@@ -6,47 +6,56 @@ import speech_recognition as sr
 from scipy.spatial.distance import cdist
 import numpy as np
 import subprocess   
+from colorama import Fore, Style, init
 
+init()
 
 load_dotenv()
 
 class WhisperSTT:
-    def __init__(self):
+    def __init__(self, user_name, inference_file, user_num):
         self.device = torch.device("cpu")
         embeddingmodel = Model.from_pretrained("pyannote/embedding", cache_dir="models/pyannote", 
                                                use_auth_token=os.getenv("HF_API_KEY"))
         self.inference = Inference(embeddingmodel, window="whole", device=self.device)
 
-        self.main_speaker_embedding = self.inference('brian.wav')
+        self.main_speaker_embedding = self.inference(inference_file)
+        self.user_name = user_name
+        self.user_num = user_num
+        self.color = Fore.YELLOW
+        if self.user_num == 1:
+            self.color = Fore.CYAN
 
     def callback(self, recognizer, audio):
 
         try:
-            transcribed_file =  "transcribed_audio.wav"
+            transcribed_file =  os.path.join("transcribed_audio", f"user{self.user_num}.wav")
             with open(transcribed_file, "wb") as f:
                 f.write(audio.get_wav_data())
 
             start = time.time()
             output = self.process_audio(transcribed_file)
             end = time.time()
-            print(f"Listen offline transcription in {end - start} seconds")
+            #print(f"[{self.user_name}] Listen offline transcription in {end - start} seconds")
             clean_output = str(output).replace(" ", "").replace(".", "").replace(",", "").lower()
             if clean_output != "you" and clean_output != "":
-                print(f"(Whisper) you said: {output}")
+                print("(Whisper)", self.color + f"{self.user_name} said: {output}" + Style.RESET_ALL)
 
-        except sr.UnknownValueError:
-            print("Speech Recognition could not understand you")
+        # except sr.UnknownValueError:
+        #     print("Speech Recognition could not understand you")
 
         except sr.RequestError as e:
             print('Could not request results from Google speech recognition service ')
 
     def listen(self):
-        print("Listening...")
+        print(self.color + f"{self.user_name} Listening..." + Style.RESET_ALL)
 
         try:
             r = sr.Recognizer()
             with sr.Microphone(sample_rate=16000) as source:
-                print("Say something")
+                if self.user_num == 0:
+                    time.sleep(0.5)
+                print(self.color + f"{self.user_name} Say something" + Style.RESET_ALL)
             stop_listening = r.listen_in_background(source, self.callback)
             while True:
                 time.sleep(0.05)
@@ -60,8 +69,8 @@ class WhisperSTT:
         speaker_embedding = self.inference(speaker_wav)
         distance = cdist(np.reshape(self.main_speaker_embedding, (1, -1)), np.reshape(speaker_embedding, (1, -1)), metric="cosine")[0, 0]
 
-        print("Speaker cosine distance", distance)
-        if distance < 0.65:
+        print(self.color + f"{self.user_name} Speaker cosine distance {distance}" + Style.RESET_ALL)
+        if distance < 0.675:
             return True
         
         return False
@@ -69,7 +78,7 @@ class WhisperSTT:
     def process_audio(self, wav_file, model_name="base.en"):
 
         if not self.speaker_verified(wav_file):
-            print("Speaker not verified")
+            # print("Speaker not verified")
             return ""
         
         model = os.path.join("modules", "whisper.cpp", "models", f"ggml-{model_name}.bin")
@@ -86,9 +95,6 @@ class WhisperSTT:
         full_command = [executable, "-m", model, "-f", wav_file, "-np", "-nt", "-fa", "-l", "en"]
 
         process = subprocess.Popen(full_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-
-
 
         output, error = process.communicate()
 
