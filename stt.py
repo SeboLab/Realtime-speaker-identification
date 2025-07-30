@@ -8,7 +8,7 @@ from colorama import Fore, Style, init
 
 init() # so that windows can detect the colors
 
-load_dotenv()
+load_dotenv() 
 
 class WhisperSTT:
     def __init__(self, user_name, inference_file, user_num):
