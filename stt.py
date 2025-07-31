@@ -2,7 +2,7 @@ from pyannote.audio import Model, Inference
 import os, time, torch, threading, pyaudio, queue, wave
 from dotenv import load_dotenv
 from scipy.spatial.distance import cdist
-import numpy as np 
+import numpy as np
 from colorama import Fore, Style, init
 from check_mic_index import check_mic_idx
 from microphone import begin_streaming
@@ -11,7 +11,7 @@ init() # so that Windows can detect the colors
 
 load_dotenv() 
 
-class WhisperSTT:
+class RevAiSTT:
     def __init__(self, user_names, inference_files, user_num, barrier):
         self.device = torch.device("cpu")   # Change to "cuda" if you have an NVIDIA GPU
         embeddingmodel = Model.from_pretrained("pyannote/embedding", cache_dir="models/pyannote", 

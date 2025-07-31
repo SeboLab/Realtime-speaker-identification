@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from stt import WhisperSTT
+from stt import RevAiSTT
 import os
 
 load_dotenv()
@@ -17,7 +17,5 @@ if len(voiceprint_files) != 2:
 user1_name = voiceprint_files[0].split(".")[0].capitalize()
 user2_name = voiceprint_files[1].split(".")[0].capitalize()
 
-print(os.path.join("voiceprint_audio", voiceprint_files[0]))
-
-whisp = WhisperSTT([user1_name, user2_name], [os.path.join("voiceprint_audio", voiceprint_files[0]), os.path.join("voiceprint_audio", voiceprint_files[1])], None, None)
+whisp = RevAiSTT([user1_name, user2_name], [os.path.join("voiceprint_audio", voiceprint_files[0]), os.path.join("voiceprint_audio", voiceprint_files[1])], None, None)
 whisp.listen()
