@@ -9,11 +9,7 @@ Uses pyannote and Whisper to get realtime transcriptions along with speaker labl
 ### 1. pip install all requirements from requirements.txt
 I would recommend running on Python 3.12.0, other versions may produce conflicts
 
-### 2. Create a folder called models
-- Within it create a subfolder called pyannote
-- This will be used to store the embedding that pyannote creates
-
-### 3. Create a folder called voiceprint_audio
+### 2. Create a folder called voiceprint_audio
 - Will hold the 15s audio clips of each speaker for pyannote to use to create your voiceprint
 
 ### 3. Create a HuggingFace account and get an access token
@@ -26,10 +22,6 @@ I would recommend running on Python 3.12.0, other versions may produce conflicts
 - Go into the whisper.cpp folder and run
 `bash ./models/download-ggml-model.sh base.en`
 - This will download the base english model from Whisper
-
-### 5. Finally create a folder called transcribe_audio
-- Temporary storage for the utterences that Whisper detects
-- For linux/Mac OS this is all
 
 ## Setup - For Windows
 
