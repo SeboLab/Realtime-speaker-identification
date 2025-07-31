@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 from stt import WhisperSTT
-import threading, os, time
+import os
 
 load_dotenv()
 
@@ -14,14 +14,5 @@ user2_name = voiceprint_files[1].split(".")[0].capitalize()
 
 print(os.path.join("voiceprint_audio", voiceprint_files[0]))
 
-user1_STT = WhisperSTT(user1_name, os.path.join("voiceprint_audio", voiceprint_files[0]), 0)
-user2_STT = WhisperSTT(user2_name, os.path.join("voiceprint_audio", voiceprint_files[1]), 1)
-user1_thread = threading.Thread(target=user1_STT.listen)
-user2_thread = threading.Thread(target=user2_STT.listen)
-
-user1_thread.start()
-time.sleep(1)
-user2_thread.start()
-
-user1_thread.join()
-user2_thread.join()
+whisp = WhisperSTT([user1_name, user2_name], [os.path.join("voiceprint_audio", voiceprint_files[0]), os.path.join("voiceprint_audio", voiceprint_files[1])], None, None)
+whisp.listen()
