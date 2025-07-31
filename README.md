@@ -17,6 +17,11 @@ I would recommend running on Python 3.12.0, other versions may produce conflicts
 - Then click on your profile on the top-right and make yourself an access token with write permissions
 - Add this token to a `.env` file, and label it `HF_API_KEY=[your HF access token]`
 
+### 4. Add your RevAi API key into the `.env` file as well
+```
+REVAI_API_KEY=[your RevAI API key]
+```
+
 ## How to run
 
 ### 1. Add your two voiceprint audio files to the voiceprint audio folder
