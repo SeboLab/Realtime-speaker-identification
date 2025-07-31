@@ -2,7 +2,7 @@
 
 ## What is it?
 
-Uses pyannote and Whisper to get realtime transcriptions along with speaker lables for two users speaking through a single streaming microphone. Credit goes to this [youtube video](https://www.youtube.com/watch?v=uf5oth4-eF8) by Tech Giant. Code is largely based on his, but tweaked to work with two people at once
+Uses pyannote and RevAi to get realtime transcriptions along with speaker lables for two users speaking through a single streaming microphone. Credit goes to this [youtube video](https://www.youtube.com/watch?v=uf5oth4-eF8) by Tech Giant. Code is largely based on his, but tweaked to work with two people at once and tweaked to work with RevAI
 
 ## Setup - For Everyone
 
@@ -16,26 +16,6 @@ I would recommend running on Python 3.12.0, other versions may produce conflicts
 - Create your account and go [here](https://huggingface.co/pyannote/embedding) to get access to pyannote models
 - Then click on your profile on the top-right and make yourself an access token with write permissions
 - Add this token to a `.env` file, and label it `HF_API_KEY=[your HF access token]`
-
-### 4. Create another folder called modules
-- Within this folder, run `git clone https://github.com/ggerganov/whisper.cpp.git`
-- Go into the whisper.cpp folder and run
-`bash ./models/download-ggml-model.sh base.en`
-- This will download the base english model from Whisper
-
-## Setup - For Windows
-
-### 5. Install Cmake at this [link](https://cmake.org/download/)
-- Download the Windows 64 installer and run
-
-### 6. Run the following commands in the modules folder
-```
-cd whisper.cpp
-mkdir build
-cd build
-cmake ..
-cmake --build . --config Release
-```
 
 ## How to run
 
