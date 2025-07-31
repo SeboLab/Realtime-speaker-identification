@@ -4,6 +4,11 @@ import os
 
 load_dotenv()
 
+nested_path = os.path.join("models", "pyannote")
+os.makedirs(nested_path, exist_ok=True)
+nested_path = os.path.join("transcribe_audio")
+os.makedirs(nested_path, exist_ok=True)
+
 voiceprint_files = os.listdir("voiceprint_audio")
 
 if len(voiceprint_files) != 2:

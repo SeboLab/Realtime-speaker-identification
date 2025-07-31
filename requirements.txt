@@ -1,8 +1,7 @@
-SpeechRecognition
+rev-ai
 pyaudio
 python-dotenv
 scipy
-openai-whisper
 pyannote.audio
 torch
 colorama

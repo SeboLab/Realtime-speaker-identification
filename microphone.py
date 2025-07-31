@@ -1,9 +1,8 @@
 import pyaudio
 from rev_ai.models import MediaConfig
 from rev_ai.streamingclient import RevAiStreamingClient
-import os, subprocess, json, time, queue, string
+import os, json, queue, string
 from dotenv import load_dotenv
-import numpy as np
 
 load_dotenv()
 
