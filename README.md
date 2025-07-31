@@ -26,7 +26,7 @@ I would recommend running on Python 3.12.0, other versions may produce conflicts
 
 ### 2. Run main.py and that's it!
 - Transcription along with speaker labels will be printed out into the terminal
-- Print statements with cosine distance will also be printed, which just tells you how likely it was that you were speaking (>0.675 means unlikely, <0.675 means likley)
+- Print statements with cosine distance will also be printed, which just tells you how likely it was that you were speaking (>0.75 means unlikely, <0.75 means likley)
 - For best performance, try not to speak at the same time
 
 
