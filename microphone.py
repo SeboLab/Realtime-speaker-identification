@@ -74,7 +74,7 @@ def append_text(text, last_partial, result, speaker, current_phrase, current_spe
     if text != "" and current_speaker[0]:
         last_partial = text
         if current_speaker[0] != speaker:
-            result[0] = f"{speaker} said:" + "".join(current_phrase)
+            result.append(f"{speaker} said: " + " ".join(current_phrase) + f"(speaker switch to {current_speaker[0]} from {speaker})")
             current_phrase.clear()
         current_phrase.append(text)
     return last_partial
@@ -83,16 +83,36 @@ def begin_streaming(result, device_idx, current_speaker):
     with MicrophoneStream(rate, chunk, device_idx) as stream:
         try:    
             response_gen = streamclient.start(stream.generator())
-            # revai_speaker = None
-            # last_partial = " "
-            # full_phrase = []
+            revai_speaker = None
+            last_partial = " "
+            full_phrase = []
             for response in response_gen:
                 response = json.loads(response)
-                if response['type'] == 'final':
-                    text = "".join(e['value'] for e in response['elements'])
-                    if current_speaker[0]:
-                        result.append(text)
+                # if response['type'] == 'final':
+                #     text = "".join(e['value'] for e in response['elements'])
+                #     if current_speaker[0]:
+                #         result.append(text)
                     
+                if response["type"] == "final":
+                    text = "".join(e['value'] for e in response['elements'])
+                    text = text.translate(str.maketrans("", "", string.punctuation))
+                    text = text.lower()
+                    text = " ".join(text.split())
+                    append_text(text, last_partial, result, revai_speaker, full_phrase, current_speaker)
+                    
+                    if current_speaker[0]:
+                         result.append(f"{revai_speaker} said: " + " ".join(full_phrase))
+                         full_phrase = []
+                         last_partial = ' '
+                         revai_speaker = None
+                if response['type'] == 'partial':
+                    if current_speaker[0]:
+                        if revai_speaker is None:
+                            revai_speaker = current_speaker[0]
+                        text = " ".join(e['value'] for e in response['elements'])
+                        last_partial = append_text(text, last_partial, result, revai_speaker, full_phrase, current_speaker)
+                        if revai_speaker != current_speaker[0]:
+                            revai_speaker = current_speaker[0]
 
         except KeyboardInterrupt:
             streamclient.end()

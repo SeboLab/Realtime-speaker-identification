@@ -1,5 +1,5 @@
 from pyannote.audio import Model, Inference, Pipeline
-import os, time, subprocess, torch, platform, json, threading
+import os, time, subprocess, torch, platform, json, threading, pyaudio, queue, wave
 from dotenv import load_dotenv
 import speech_recognition as sr
 from scipy.spatial.distance import cdist
@@ -30,6 +30,9 @@ class WhisperSTT:
         self.user1_color = Fore.YELLOW
         self.user2_color = Fore.CYAN
         self.current_speaker = [None]
+        self.audio_queue = queue.Queue()
+        self.rate = 16000
+        self.chunk = 1600
         check_mic_idx()
         self.device_index = int(input("Which device ID would you like to use?: "))
         self.revai_result = []
@@ -38,8 +41,14 @@ class WhisperSTT:
 
         try:
             transcribed_file =  os.path.join("transcribed_audio", "user.wav")
-            with open(transcribed_file, "wb") as f:
-                f.write(audio.get_wav_data())
+            # with open(transcribed_file, "wb") as f:
+            #     f.write(audio.get_wav_data())
+            with wave.open(transcribed_file, 'wb') as wf:
+                wf.setnchannels(1)           # mono
+                wf.setsampwidth(2)           # 16-bit PCM = 2 bytes
+                wf.setframerate(16000)       # sample rate
+                wf.writeframes(audio)
+
             self.current_speaker[0] = self.speaker_verified(transcribed_file)
 
             # output, current_speaker = self.process_audio(transcribed_file)
@@ -56,19 +65,42 @@ class WhisperSTT:
         except sr.RequestError as e:
             print('Could not request results from Google speech recognition service ')
 
-    def timed_callback(self, recognizer, audio):
-        time.sleep(1)
+    
+    def mic_stream(self):
+        pa = pyaudio.PyAudio()
+        stream = pa.open(format=pyaudio.paInt16,
+                         channels=1,
+                         rate=self.rate,
+                         input=True,
+                         frames_per_buffer=self.chunk,
+                         input_device_index=self.device_index)
+        while True:
+            data = stream.read(self.chunk, exception_on_overflow=False)
+            self.audio_queue.put(data)
+
+    def process_chunks(self):
+        buffer = b""
+        chunk_size =  self.rate * 4
+        while True:
+            data = self.audio_queue.get()
+            buffer += data
+            if len(buffer) >= chunk_size:
+                chunk = buffer[:chunk_size]
+                buffer = buffer[chunk_size:]
+                self.callback(None, chunk)
 
 
     def listen(self):
 
         try:
-            r = sr.Recognizer()
-            r.energy_threshold = 100
-            with sr.Microphone(sample_rate=16000, device_index=self.device_index) as source:
-                print("Say something")
+            # r = sr.Recognizer()
+            # r.energy_threshold = 100
+            # with sr.Microphone(sample_rate=16000, device_index=self.device_index) as source:
+            #     print("Say something")
 
-            stop_listening = r.listen_in_background(source, self.callback)
+            # stop_listening = r.listen_in_background(source, self.callback)
+            threading.Thread(target=self.mic_stream, daemon=True).start()
+            threading.Thread(target=self.process_chunks, daemon=True).start()
             time.sleep(0.5)
             revai_thread = threading.Thread(target=begin_streaming, args=(self.revai_result, self.device_index, self.current_speaker))
             revai_thread.start()
